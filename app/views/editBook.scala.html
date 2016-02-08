@@ -1,0 +1,82 @@
+@(editList:Listing,conditions: List[Condition])
+
+
+
+@main("UMBooks") {
+
+    <div class="jumbotron splash-header">
+        <div class="container">
+            <h1>Beacon Books</h1>
+            <p>Most students spend around $1200 on textbooks per year.  Don't be like most students. Save big on textbooks.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <h2>Update Your Book</h2>
+            <p>Use the form below to update the information for the book you'd like to sell</p>
+
+
+
+
+                <div class="col-sm-4">
+        <form name="editBook" action="/book/update" method="post">
+        <input type="hidden" name="id" id="id" value="@editList.id">
+        <input type="hidden" name="listedBy" id="listedBy" value="@editList.listedBy">
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" class="form-control" name="title" id="title" value="@editList.title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="isbn">ISBN</label>
+                        <input type="text" class="form-control" name="isbn" id="isbn" value="@editList.isbn" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="condition">Condition</label>
+                        <select class="form-control" id="condition" name="condition" required>
+
+                            @for(conditionsEach <- conditions) {
+                             @if(editList.condition.id==conditionsEach.id){
+														<option value="@conditionsEach.id" selected="selected">@conditionsEach.name</option>
+														} else {
+														<option value="@conditionsEach.id">@conditionsEach.name</option>
+														}
+
+						}
+
+                            <!-- todo: add dynamic donditions here -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="author">Author</label>
+                        <input type="text" class="form-control" name="author" id="author" value="@editList.author" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="publisher">Publisher</label>
+                        <input type="text" class="form-control" id="publisher" name="publisher" value="@editList.publisher" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edition">Edition/Year</label>
+                        <input type="text" class="form-control" id="edition" name="edition" value="@editList.edition" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea type="text" rows=5 class="form-control" id="description" name="description" required>@editList.description</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Price</label>
+                        <input type="number" step="0.01" class="form-control" id="price" name="price" value="@editList.price" required>
+                    </div>
+
+                    <input type="submit" class="btn btn-primary" name="UPDATE" value="UPDATE">
+   </form>
+                </div>
+
+        </div>
+    </div>
+    <script>
+        $('select').select2();
+    </script>
+}
+

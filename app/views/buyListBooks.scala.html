@@ -1,0 +1,224 @@
+@(federatedBooks: List[FederatedBook], courseNum: String, isbn: String)
+
+@**********************************
+* Book not found from seller helper *
+***********************************@
+@book_not_found(seller_img_url:String) = {
+    <div class="col-xs-2">
+        <img class="img-responsive logo" src="@seller_img_url">
+    </div>
+    <div class="col-xs-10">
+        <div class="alert alert-warning">No results found</div>
+    </div>
+}
+
+@to_currency(num:Double) = {
+    $@{"%.2f".format(num)}
+}
+
+@main("Beacon Books - Required Books") {
+    <div class="container buy_list_books">
+        <h1 class="page-header">
+            @if(courseNum != null && courseNum != "") {
+                Required books for @courseNum
+            } else {
+                Results for ISBN: @isbn
+            }
+        </h1>
+        @for(fBook <- federatedBooks) {
+            @if(fBook.foundBook()) {
+                <div class="row">
+                    <div class="col-xs-3">
+                        @if(fBook.hasImage()) {
+                            <img class="img-thumbnail img-rounded" src="@fBook.getImageUrl()" >
+                        } else {
+                            <img class="img-thumbnail img-rounded" src="@routes.Assets.at("images/book.png")">
+                        }
+                    </div>
+                    <div class="col-xs-9">
+                        <h2>@fBook.getTitle()</h2>
+                        <table class="tbl_dl">
+                            <tr>
+                                <td>Author</td><td>@fBook.getAuthor()</td>
+                            </tr>
+                            <tr>
+                                <td>Publisher</td><td>@fBook.getPublisher()</td>
+                            </tr>
+                            <tr>
+                                <td>Edition</td><td>@fBook.getEdition()</td>
+                            </tr>
+                            <tr>
+                                <td>ISBN</td><td>@fBook.getISBN()</td>
+                            </tr>
+                            @if(fBook.getCopyrightYear() != null) {
+                                <tr>
+                                    <td>Copyright Year</td> <td>@fBook.getCopyrightYear()</td>
+                                </tr>
+                            }
+                        </table>
+
+                        <h3>Local Listings</h3>
+                        <div class="local_listings_wrap">
+                            @if(fBook.foundLocalResult) {
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Condition</th>
+                                            <th>Price</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    <thead>
+                                    <tbody>
+                                        @for(localResult <- fBook.getLocalResults()) {
+                                          <tr>
+                                              <td>@localResult.condition.name</td>
+                                              <td>@to_currency(localResult.price)</td>
+                                              <td>@localResult.description</td>
+                                              <td>
+                                                <a class="btn btn-default btn-xs center-block" href="@routes.BookController.showBook(localResult.id)" role="button" target="_blank">View »</a>
+                                              </td>
+                                          </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            } else {
+                                <div class="alert alert-warning">No copies available from local sellers</div>
+                            }
+                        </div>
+
+                        <h3>Store Listings</h3>
+                        <div class="row book_seller">
+                            @if(fBook.foundBookstoreBook()) {
+                                @defining(fBook.getBookstoreBook) { book =>
+                                    <div class="col-xs-2">
+                                        <img class="img-responsive logo" src="@routes.Assets.at("images/umb_logo.gif")">
+                                        <a class="btn btn-default btn-sm center-block" href="@book.bookstoreUrl()" role="button" target="_blank">
+                                            View »</a>
+                                    </div>
+                                    <div class="col-xs-10">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Buy / Rent </th>
+                                                    <th>Condition</th>
+                                                    <th>Price</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if(book.buyNewPrice != null && book.buyNewPrice > 0) {
+                                                    <tr>
+                                                        <td>Buy</td>
+                                                        <td>New</td>
+                                                        <td>@to_currency(book.buyNewPrice)</td>
+                                                    </tr>
+                                                }
+                                                @if(book.buyUsedPrice != null && book.buyUsedPrice > 0) {
+                                                    <tr>
+                                                        <td>Buy</td>
+                                                        <td>Used</td>
+                                                        <td>@to_currency(book.buyUsedPrice)</td>
+                                                    </tr>
+                                                }
+                                                @if(book.rentNewPrice != null && book.rentNewPrice > 0) {
+                                                    <tr>
+                                                        <td>Rent</td>
+                                                        <td>New</td>
+                                                        <td>@to_currency(book.rentNewPrice)</td>
+                                                    </tr>
+                                                }
+                                                @if(book.rentNewPrice != null && book.rentUsedPrice > 0) {
+                                                    <tr>
+                                                        <td>Rent</td>
+                                                        <td>Used</td>
+                                                        <td>@to_currency(book.rentUsedPrice)</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                }
+                            } else {
+                                @book_not_found( routes.Assets.at("images/umb_logo.gif").toString() )
+                            }
+                        </div>
+
+                        <div class="row book_seller">
+                            @if(fBook.foundAmazonBook()) {
+                                @defining( fBook.getAmazonBook() ) { book =>
+                                    <div class="col-xs-2">
+                                        <img class="img-responsive logo" src="@routes.Assets.at("images/amazon_logo.png")">
+                                        <a class="btn btn-default btn-sm center-block" href="@book.getUrl()" target="_blank" role="button">View »</a>
+                                    </div>
+                                    <div class="col-xs-10">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Condition</th>
+                                                    <th>Price (excluding shipping)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if(book.getNewPrice() > 0) {
+                                                    <tr>
+                                                        <td>New</td>
+                                                        <td>@to_currency(book.getNewPrice())</td>
+                                                    </tr>
+                                                }
+                                                @if(book.getUsedPrice() > 0) {
+                                                    <tr>
+                                                        <td>Used</td>
+                                                        <td>@to_currency(book.getUsedPrice())</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                }
+                            } else {
+                                @book_not_found( routes.Assets.at("images/amazon_logo.png").toString() )
+                            }
+                        </div>
+
+                        <div class="row book_seller">
+
+                            @if(fBook.foundEbayBook()) {
+                                <div class="col-xs-2">
+                                    <img class="img-responsive logo" src="@routes.Assets.at("images/ebay_logo.png")">
+                                    <a class="btn btn-default btn-sm center-block" href="@fBook.getEbayUrl()" target="_blank" role="button">View »</a>
+                                </div>
+                                <div class="col-xs-10">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Condition</th>
+                                                <th>Shipped Price</th>
+                                                <th>Listing Type</th>
+                                                <th>Location</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @for(book <- fBook.getEbayBooks()) {
+                                                <tr>
+                                                    <td>@book.getCondition()</td>
+                                                    <td>@to_currency(book.getShippedPrice())</td>
+                                                    <td>@book.getListingType()</td>
+                                                    <td>@book.getLocation()</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            } else {
+                                @book_not_found( routes.Assets.at("images/ebay_logo.png").toString() )
+                            }
+                    </div>
+                    </div>
+                </div>
+            } else {
+                    <!-- informal language... 'cause we're not a machine -->
+                    <div class="alert alert-warning"><strong>Bummertown!</strong> No matching books found</div>
+            }
+        }
+    </div>
+}

@@ -1,0 +1,31 @@
+@(message: String)
+
+@main("UMBooks") {
+
+<div class="jumbotron splash-header">
+    <div class="container">
+        <h1>Beacon Books</h1>
+        <p>Most students spend around $1200 on textbooks per year.  Don't be like most students. Save big on textbooks.</p>
+    </div>
+</div>
+
+
+<div class="container">
+    @if(flash.contains("success")) {
+        <div class="alert alert-success">@flash.get("success")</div>
+    }
+    <div class="row">
+        <div class="col-sm-4 buy-sell-splash col-sm-offset-1">
+            <h2>Buy Textbooks</h2>
+            <p>Easily search by class, your Schedule, or ISBN.  Compare prices across the UMB bookstore, Amazon and Ebay. <br />No fees, ever.</p>
+            <a class="btn btn-default btn-md" href="/buy" role="button">Get Started »</a>
+        </div>
+        <div class="col-sm-4 buy-sell-splash col-sm-offset-1">
+            <h2>Sell Textbooks</h2>
+            <p>Sell directly to other UMB students.  Set your own price.  No seller or buyer fees means more money in your pocket.</p>
+            <a class="btn btn-default btn-md" href="/listings" role="button">Get Started»</a>
+        </div>
+    </div>
+</div>
+
+}

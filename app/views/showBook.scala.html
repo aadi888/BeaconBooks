@@ -1,0 +1,62 @@
+@(listing: Listing)
+@main("UMBooks") {
+    <div class="container">
+    <h2>Seller listings</h2>
+    <form action="/book/show" method="get">
+    	<div class="form-group">
+        <div class="row">
+            <div class="col-sm-2">
+                <img src="@routes.Assets.at("images/book.png")" alt=""  class="img-thumbnail">
+            </div>
+            <div class="col-sm-10">
+       @if(listing == null) {
+       		No Local Listing for ISBN: @listing.isbn
+       		} else {
+                <h1>Title: @listing.title</h1>
+                <table class="tbl_dl">
+                    <tr>
+                        <td>Author</td><td>@listing.author</td>
+                    </tr>
+                    <tr>
+                        <td>Edition</td><td>@listing.edition</td>
+                    </tr>
+                    <tr>
+                        <td>ISBN</td><td>@listing.isbn</td>
+                    </tr>
+                    <tr>
+                        <td>Publisher</td><td>@listing.publisher</td>
+                    </tr>
+                    <tr>
+                        <td>Copyright Year</td><td>@listing.copyright_date</td>
+                    </tr>
+                    <tr>
+                    	<td>Price</td><td>@listing.price</td>
+                    </tr>
+                </table>
+             }
+                </div>
+		</form>
+                <div class="row">
+                    <div class="col-sm-8">
+                        <h2>Contact Seller</h2>
+                        <form name="contactform" method="post" action="/book/email">
+                            <div class="form-group">
+                                <label for="reason">Reason</label>
+                                <select id="reason" name="reason" required>
+                                    <option>Question about book</option>
+                                    <option>Purchase book</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Message</label>
+                                <textarea class="form-control" id="message" name="message" placeholder="Your message here" required></textarea>
+                            </div>
+                            <input type="hidden" name="id" value="@listing.id">
+                            <input type="submit" class="btn btn-primary" >
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

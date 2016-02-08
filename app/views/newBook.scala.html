@@ -1,0 +1,67 @@
+@main("UMBooks") {
+
+    <div class="jumbotron splash-header">
+        <div class="container">
+            <h1>Beacon Books</h1>
+            <p>Most students spend around $1200 on textbooks per year.  Don't be like most students. Save big on textbooks.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <h2>Sell a book</h2>
+            <p>Use the form below to fill out the information for the book you'd like to sell</p>
+
+			<form action="/book/new" method="post">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" class="form-control" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="isbn">ISBN</label>
+                        <input type="text" class="form-control" name="isbn" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="condition">Condition</label>
+                        <select class="form-control" name="condition" required>
+                            <option value="5">Like New</option>
+                            <option value="4">Very Good</option>
+                            <option value="3">Good</option>
+                            <option value="2">Acceptable</option>
+                            <option value="1">Poor</option>
+                            <!-- todo: add dynamic donditions here -->
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="author">Author</label>
+                        <input type="text" class="form-control" name="author" required>
+
+                    </div>
+                    <div class="form-group">
+                        <label for="publisher">Publisher</label>
+                        <input type="text" class="form-control" name="publisher" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edition">Edition/Year</label>
+                        <input type="text" class="form-control" name="edition" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea type="text" rows=5 class="form-control" name="description" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Price</label>
+                        <input type="number" step="0.01" class="form-control" name="price" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        $('select').select2();
+    </script>
+}
+
